@@ -33,7 +33,7 @@ On my machine this tool uses <1MB of RAM and has non measurable CPU usage. So it
  
 Following diagram describes the algorithm:
 
-![activity diagram][https://github.com/Argannor/poe-minimizer/raw/master/activity.diagram.png)
+![activity diagram](https://github.com/Argannor/poe-minimizer/raw/master/activity.diagram.png)
 
 ## Compilation
 
