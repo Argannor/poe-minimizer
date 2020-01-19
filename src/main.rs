@@ -10,9 +10,9 @@ use std::io::BufReader;
 use std::io::Error;
 use std::time::{Duration, SystemTime};
 
-use config::{Config, ConfigError};
+use config::{ConfigError};
 use rev_lines::RevLines;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 const WINDOW_NAME: &str = "window_name";
 const LOG_LOCATION: &str = "log_file_location";
@@ -36,7 +36,7 @@ struct Settings {
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
         let mut config = config::Config::default();
-        config.set_default(SECONDS_TO_CHECK_FOR_POE, "Path of Exile")?;
+        config.set_default(WINDOW_NAME, "Path of Exile")?;
         config.set_default(LOG_LOCATION, "C:\\Program Files (x86)\\Grinding Gear Games\\Path of Exile\\logs\\Client.txt")?;
         config.set_default(LOG_POLLING_INTERVAL, 500)?;
         config.set_default(AFK_MARKER, "AFK mode is now")?;
