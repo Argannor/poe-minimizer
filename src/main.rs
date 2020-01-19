@@ -15,8 +15,8 @@ use rev_lines::RevLines;
 use serde::{Deserialize};
 
 const WINDOW_NAME: &str = "window_name";
-const LOG_LOCATION: &str = "log_file_location";
-const LOG_POLLING_INTERVAL: &str = "log_file_polling_interval_ms";
+const LOG_FILE_LOCATION: &str = "log_file_location";
+const LOG_FILE_POLLING_INTERVAL_MS: &str = "log_file_polling_interval_ms";
 const AFK_MARKER: &str = "afk_marker";
 const AFK_MARKER_ON: &str = "afk_marker_on";
 const SECONDS_UNTIL_MINIMIZE: &str = "seconds_until_minimize";
@@ -26,7 +26,7 @@ const SECONDS_TO_CHECK_FOR_POE: &str = "seconds_to_check_for_poe";
 struct Settings {
     window_name: String,
     log_file_location: String,
-    log_file_polling_interval: u64,
+    log_file_polling_interval_ms: u64,
     afk_marker: String,
     afk_marker_on: String,
     seconds_until_minimize: u64,
@@ -37,8 +37,8 @@ impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
         let mut config = config::Config::default();
         config.set_default(WINDOW_NAME, "Path of Exile")?;
-        config.set_default(LOG_LOCATION, "C:\\Program Files (x86)\\Grinding Gear Games\\Path of Exile\\logs\\Client.txt")?;
-        config.set_default(LOG_POLLING_INTERVAL, 500)?;
+        config.set_default(LOG_FILE_LOCATION, "C:\\Program Files (x86)\\Grinding Gear Games\\Path of Exile\\logs\\Client.txt")?;
+        config.set_default(LOG_FILE_POLLING_INTERVAL_MS, 500)?;
         config.set_default(AFK_MARKER, "AFK mode is now")?;
         config.set_default(AFK_MARKER_ON, "ON")?;
         config.set_default(SECONDS_UNTIL_MINIMIZE, 5)?;
@@ -86,7 +86,7 @@ fn check_for_minimization(handle: winapi::shared::windef::HWND, settings: &Setti
             minimize_window(handle)?;
         }
 
-        thread::sleep(time::Duration::from_millis(settings.log_file_polling_interval));
+        thread::sleep(time::Duration::from_millis(settings.log_file_polling_interval_ms));
     }
 }
 
