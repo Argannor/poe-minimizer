@@ -1,0 +1,11 @@
+[package]
+name = "poe-minimizer"
+version = "0.1.0"
+authors = ["Argannor <arga@argannor.com>"]
+edition = "2018"
+
+[dependencies]
+winapi = { version = "0.3.8", features = ["winuser"] }
+rev_lines = "0.2.1"
+config = "0.10.1"
+serde = { version = "1.0", features = ["derive"] }

@@ -1,0 +1,14 @@
+@startuml
+
+start
+
+repeat
+:Wait;
+if (player is AFK and  window is maximized for >x seconds) then (yes)
+    :Minimize;
+endif
+repeat while (running)
+
+stop
+
+@enduml
