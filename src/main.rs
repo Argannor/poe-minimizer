@@ -15,8 +15,6 @@ mod winutils;
 struct Settings {
     window_name: String,
     log_file_polling_interval_ms: u64,
-    afk_marker: String,
-    afk_marker_on: String,
     seconds_until_minimize: u64,
     seconds_to_check_for_poe: u64,
 }
@@ -26,8 +24,6 @@ impl Settings {
         Settings {
             window_name: "Path of Exile".to_owned(),
             log_file_polling_interval_ms: 500,
-            afk_marker: "AFK mode is now".to_owned(),
-            afk_marker_on: "ON".to_owned(),
             seconds_until_minimize: 5,
             seconds_to_check_for_poe: 30
         }
@@ -92,11 +88,43 @@ fn get_last_afk_status_from_log(settings: &Settings, log_path: &str) -> Option<b
     let rev_lines = RevLines::new(BufReader::new(file)).unwrap();
     rev_lines
         .take(20)
-        .skip_while(|x| !x.contains(&settings.afk_marker))
-//        .inspect(|x| println!("log line: {}", x))
-        .map(|x| x.contains(&settings.afk_marker_on))
+        .skip_while(|x| !x.contains("ac9")) // magic constant in log for chat related stuff
+        .skip_while(|x| x.contains("] @")) // otherwise ppl could send forged messages
+        //        .inspect(|x| println!("log line: {}", x))
+        .map(|x| log_line_as_afk_status(x.as_str()))
         .next()
+        .flatten()
 }
 
+fn log_line_as_afk_status(log_line: &str) -> Option<bool> {
+    if is_afk_activated_message(log_line) {
+        Some(true)
+    } else if is_afk_deactivated_message(log_line) {
+        Some(false)
+    } else {
+        None
+    }
+}
 
+fn is_afk_activated_message(log_line: &str) -> bool {
+    log_line.contains(": AFK mode is now ON.")
+    || log_line.contains(": Le mode Absent (AFK) est désormais activé.")
+    || log_line.contains(": AFK-Modus ist nun AN.")
+    || log_line.contains(": Modo LDT Ativado.")
+    || log_line.contains(": Режим \"отошёл\" включён.")
+    || log_line.contains(": เปิดโหมด AFK แล้ว ตอบกลับอัตโนมัติ")
+    || log_line.contains(": El modo Ausente está habilitado.")
+    || log_line.contains(": 자리 비움 모드를 설정했습니다.")
+}
+
+fn is_afk_deactivated_message(log_line: &str) -> bool {
+    log_line.contains(": AFK mode is now OFF.")
+    || log_line.contains(": Le mode Absent (AFK) est désactivé.")
+    || log_line.contains(": AFK-Modus ist nun AUS.")
+    || log_line.contains(": Modo LDT Desativado.")
+    || log_line.contains(": Режим \"отошёл\" выключен.")
+    || log_line.contains(": ปิดโหมด AFK แล้ว")
+    || log_line.contains(": El modo Ausente está deshabilitado.")
+    || log_line.contains(": 자리 비움 모드를 해제했습니다.")
+}
 
