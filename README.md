@@ -11,16 +11,11 @@ can't even forget it :)
 
 - Windows 10 64bit -> see Releases for most recent binaries
 - Windows 10 32bit -> you'd have to build it yourself
-- Windows < 10 maybe? But you should propably update either way..
+- Windows < 10 maybe? But you should propably upgrade either way..
 
-## Installation
+## How to use
 
 - Download the Zip file on the releases page and extract it
-- Take a look at Settings.toml (open it with a text editor of your choice)
-  - Check the property log_file_location and make sure it points to your Client.txt
-  - If you're playing the game in a different language then English, please have a look at
-    - afk_marker
-    - afk_marker_on
 - run poe-minimizer.exe 
 
 ## Help / Issues
