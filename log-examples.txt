@@ -1,0 +1,41 @@
+2020/02/04 21:28:19 1732442156 ac9 [INFO Client 46152] @From xxx: Hi, I would like to buy your Brimstone Band Opal Ring listed for 999 exalted in Metamorph (stash tab "WTS"; position: left 9, top 2)
+
+EN
+
+2020/02/07 01:15:50 1918890562 ac9 [INFO Client 28536] : AFK mode is now ON. Autoreply "This player is AFK."
+2020/02/07 02:23:22 1922942312 ac9 [INFO Client 28536] : AFK mode is now OFF.
+
+FR
+
+2020/02/07 02:24:30 1923010312 ac9 [INFO Client 21156] : Le mode Absent (AFK) est désormais activé. Réponse automatique : « Ce joueur est absent. »
+2020/02/07 02:24:38 1923018593 ac9 [INFO Client 21156] : Le mode Absent (AFK) est désactivé.
+
+DE
+
+2020/02/07 02:25:29 1923069375 ac9 [INFO Client 40536] : AFK-Modus ist nun AN. Automatische Antwort: 'Dieser Spieler ist AFK.'
+2020/02/07 02:25:30 1923070656 ac9 [INFO Client 40536] : AFK-Modus ist nun AUS.
+
+PT (B)
+
+2020/02/07 02:28:26 1923246625 ac9 [INFO Client 44156] : Modo LDT Ativado. Reposta automática "Este jogador está AFK."
+2020/02/07 02:28:27 1923247546 ac9 [INFO Client 44156] : Modo LDT Desativado.
+
+RU
+
+2020/02/07 02:29:19 1923299015 ac9 [INFO Client 24748] : Режим "отошёл" включён. Авто-ответ "Игрок отошёл.".
+2020/02/07 02:29:20 1923300406 ac9 [INFO Client 24748] : Режим "отошёл" выключен.
+
+IN
+
+2020/02/07 02:31:04 1923404734 ac9 [INFO Client 31620] : เปิดโหมด AFK แล้ว ตอบกลับอัตโนมัติ "ผู้เล่นไม่อยู่หน้าคอมในตอนนี้"
+2020/02/07 02:31:06 1923406328 ac9 [INFO Client 31620] : ปิดโหมด AFK แล้ว
+
+ES
+
+2020/02/07 02:31:53 1923453296 ac9 [INFO Client 7276] : El modo Ausente está habilitado. Autorespuesta "Este jugador está AUS."
+2020/02/07 02:31:54 1923454578 ac9 [INFO Client 7276] : El modo Ausente está deshabilitado.
+
+KOR
+
+2020/02/07 02:32:39 1923499281 ac9 [INFO Client 24608] : 자리 비움 모드를 설정했습니다. "이 플레이어는 자리비움 상태입니다."을(를) 자동으로 답신합니다.
+2020/02/07 02:32:40 1923500531 ac9 [INFO Client 24608] : 자리 비움 모드를 해제했습니다.
