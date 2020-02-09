@@ -8,3 +8,5 @@ edition = "2018"
 winapi = { version = "0.3.8", features = ["winuser", "processthreadsapi", "psapi", "shellapi"] }
 rev_lines = "0.2.1"
 widestring = "0.4.0" # windows api strings are a pain
+simplelog = "0.7.4"
+log = "0.4.8"

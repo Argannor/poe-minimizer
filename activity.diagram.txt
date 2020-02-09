@@ -1,14 +1,22 @@
 @startuml
-
+|Wait for PoE|
 start
 
 repeat
-:Wait;
-if (player is AFK and  window is maximized for >x seconds) then (yes)
-    :Minimize;
-endif
-repeat while (running)
+if (Is Path of Exile running?) then (yes)
+    |Check AFK status|
+    repeat
+        :Check AFK status using Client.txt;
+        if (Is the player AFK and \n is the window maximized for at least 5 seconds?) then (yes)
+            :Minimize PoE;
+        endif
+        :Wait 500ms;
+    repeat while (should exit?) is (no)
 
+endif
+|Wait for PoE|
+:Wait 30s;
+repeat while (should exit?) is (no)
 stop
 
 @enduml

@@ -151,10 +151,9 @@ pub fn handle_windows_messages(window_handle: HWND) -> Result<Event, Error> {
         if response_code == 0 {
             return Ok(Nothing);
         }
-        println!("{:?}", msg.message);
+        debug!("received windows message: {}", msg.message);
 
         if msg.message == SYSTEM_TRAY_POPUP_EXIT {
-            println!("exit");
             return Ok(Exit);
         }
 
@@ -171,7 +170,6 @@ unsafe extern "system" fn win_proc_dispatch(hwnd: HWND, msg: UINT, wparam: WPARA
     if msg == SYSTEM_TRAY_MESSAGE {
         let event = lparam & 0xff;
         if event == 0x04 {
-            println!("right clicked");
             create_tray_menu(hwnd);
             return 0;
         }

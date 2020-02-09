@@ -26,10 +26,12 @@ If you're having any issues, feel free to open an issue here on github.
 
 On my machine this tool uses <1MB of RAM and has non measurable CPU usage. So it should not impact your FPS.
  
-Following diagram describes the algorithm:
+Following diagram roughly describes the algorithm:
 
 ![activity diagram](https://github.com/Argannor/poe-minimizer/raw/master/activity.diagram.png)
 
+The wait time depends whether or not a PoE window could be found:
+- 500ms 
 ## Compilation
 
 - Only tested under Windows 10 64bit
