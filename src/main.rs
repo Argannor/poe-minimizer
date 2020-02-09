@@ -1,4 +1,6 @@
+#![windows_subsystem = "windows"]
 extern crate rev_lines;
+extern crate widestring;
 #[cfg(windows)]
 extern crate winapi;
 
@@ -9,8 +11,12 @@ use std::io::Error;
 use std::time::{Duration, SystemTime};
 
 use rev_lines::RevLines;
+use winapi::_core::sync::atomic::{AtomicBool, Ordering};
+
+use crate::tray::Event;
 
 mod winutils;
+mod tray;
 
 struct Settings {
     window_name: String,
@@ -30,16 +36,42 @@ impl Settings {
     }
 }
 
+static RUNNING: AtomicBool = AtomicBool::new(true);
+
 fn main() {
+    let handle = thread::spawn(move || {
+        main_service();
+    });
+    let _ = main_window();
+    let _ = handle.join();
+}
+
+fn main_window() -> Result<(), Error> {
+    let message_window_handle = tray::create_message_window().expect("failed to create window");
+    while RUNNING.load(Ordering::Relaxed) {
+        let event = tray::handle_windows_messages(message_window_handle)?;
+        match event {
+            Event::Exit => {
+                tray::destroy_message_window(message_window_handle)?;
+                RUNNING.store(false, Ordering::Relaxed);
+            },
+            Event::Nothing => {},
+        }
+    }
+    Ok(())
+}
+
+fn main_service() {
     let settings: Settings = Settings::default();
+
     loop {
-        let _ = match winutils::get_window_handle(&settings.window_name) {
-            Ok(handle) => check_for_minimization(handle, &settings),
-            Err(error) => {
-                println!("couldn't find window {:?}", error);
-                Err(error)
-            }
+        if let Ok(handle) = winutils::get_window_handle(&settings.window_name) {
+            let _ = check_for_minimization(handle, &settings);
+            // we basically don't care about errors here at the moment and just retry.
         };
+        if !RUNNING.load(Ordering::Relaxed) {
+            break;
+        }
         thread::sleep(Duration::from_secs(settings.seconds_to_check_for_poe))
     }
 }
@@ -57,8 +89,8 @@ fn check_for_minimization(handle: winapi::shared::windef::HWND, settings: &Setti
     let mut was_minimized = false;
     let mut last_time_maximized = SystemTime::now();
     let log_path = find_log_path(handle).expect("Failed to find Client.txt");
-    loop {
-        match get_last_afk_status_from_log(settings, &log_path) {
+    while RUNNING.load(Ordering::Relaxed) {
+        match get_last_afk_status_from_log(&log_path) {
             Some(afk) => afk_status = afk,
             None => {}
         }
@@ -81,9 +113,10 @@ fn check_for_minimization(handle: winapi::shared::windef::HWND, settings: &Setti
 
         thread::sleep(time::Duration::from_millis(settings.log_file_polling_interval_ms));
     }
+    Ok(())
 }
 
-fn get_last_afk_status_from_log(settings: &Settings, log_path: &str) -> Option<bool> {
+fn get_last_afk_status_from_log(log_path: &str) -> Option<bool> {
     let file = File::open(log_path).unwrap();
     let rev_lines = RevLines::new(BufReader::new(file)).unwrap();
     rev_lines

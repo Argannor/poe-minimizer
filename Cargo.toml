@@ -5,5 +5,6 @@ authors = ["Argannor <arga@argannor.com>"]
 edition = "2018"
 
 [dependencies]
-winapi = { version = "0.3.8", features = ["winuser", "processthreadsapi", "psapi"] }
+winapi = { version = "0.3.8", features = ["winuser", "processthreadsapi", "psapi", "shellapi"] }
 rev_lines = "0.2.1"
+widestring = "0.4.0" # windows api strings are a pain
