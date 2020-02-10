@@ -28,7 +28,7 @@ On my machine this tool uses <1MB of RAM and has non measurable CPU usage. So it
  
 Following diagram roughly describes the algorithm:
 
-![activity diagram](https://github.com/Argannor/poe-minimizer/raw/master/activity.diagram.png)
+![activity diagram](https://github.com/Argannor/poe-minimizer/raw/master/assets/diagrams/activity.diagram.png)
 
 The wait time depends whether or not a PoE window could be found:
 - 500ms 

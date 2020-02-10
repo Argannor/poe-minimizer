@@ -1,9 +1,14 @@
 @startuml
+
+' !include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/materia/puml-theme-materia.puml
+!define STYLEPATH .
+!include STYLEPATH/stylesheet.iuml
+
 |Wait for PoE|
 start
 
 repeat
-if (Is Path of Exile running?) then (yes)
+if (Is Path of Exile running? STYLE_ACCENT) then (yes)
     |Check AFK status|
     repeat
         :Check AFK status using Client.txt;
