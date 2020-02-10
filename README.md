@@ -31,8 +31,6 @@ Following diagram roughly describes the algorithm:
 
 ![activity diagram](https://github.com/Argannor/poe-minimizer/raw/master/assets/diagrams/activity.diagram.png)
 
-The wait time depends whether or not a PoE window could be found:
-- 500ms 
 ## Compilation
 
 - Only tested under Windows 10 64bit
