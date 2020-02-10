@@ -1,11 +1,11 @@
 [package]
 name = "poe-minimizer"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Argannor <arga@argannor.com>"]
 edition = "2018"
 
 [dependencies]
-winapi = { version = "0.3.8", features = ["winuser", "processthreadsapi", "psapi", "shellapi"] }
+winapi = { version = "0.3.8", features = ["winuser", "processthreadsapi", "psapi", "shellapi", "winreg", "winnt"] }
 rev_lines = "0.2.1"
 widestring = "0.4.0" # windows api strings are a pain
 simplelog = "0.7.4"

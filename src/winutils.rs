@@ -1,9 +1,11 @@
 use std::io::Error;
 use std::ptr::null_mut;
 use std::path::PathBuf;
+use winapi::um::winreg::{HKEY_CURRENT_USER, RegQueryValueExA};
+use winapi::shared::winerror::{ERROR_SUCCESS, ERROR_FILE_NOT_FOUND};
+use std::ffi::CString;
 
 pub fn get_window_handle(title: &str) -> Result<winapi::shared::windef::HWND, Error> {
-    use std::ffi::CString;
     let window_handle = unsafe {
         let window_title = CString::new(title).expect("CString::new failed");
         winapi::um::winuser::FindWindowA(null_mut(), window_title.as_ptr())
@@ -109,4 +111,49 @@ fn get_process_file_name(process_handle: winapi::um::winnt::HANDLE, module_handl
     }
 
     Ok(PathBuf::from(String::from_utf16_lossy(&exe_buf[..pos])))
+}
+
+pub fn is_in_autostart() -> Result<bool, Error> {
+    unsafe {
+        let key = get_autostart_hkey()?;
+        let result = RegQueryValueExA(key, CString::new("poe-minimizer").unwrap().as_ptr(), null_mut(), &mut winapi::um::winnt::REG_SZ, null_mut(), null_mut());
+        match result as u32 {
+            ERROR_SUCCESS => Ok(true),
+            ERROR_FILE_NOT_FOUND => Ok(false),
+            _ => Err(Error::last_os_error())
+        }
+    }
+}
+
+pub fn add_to_autostart() -> Result<(), Error> {
+    unsafe {
+        let key = get_autostart_hkey()?;
+        let current_path = std::env::current_exe()?;
+        let current_path = current_path.to_str().unwrap().clone();
+
+        let value = CString::new(format!("\"{}\"", current_path)).unwrap();
+        let value = value.as_bytes_with_nul();
+        winapi::um::winreg::RegSetValueExA(key, CString::new("poe-minimizer").unwrap().as_ptr(), 0, winapi::um::winnt::REG_SZ, value.as_ptr(), value.len() as u32);
+    }
+    Ok(())
+}
+
+pub fn remove_from_autostart() -> Result<(), Error> {
+    unsafe {
+        let key = get_autostart_hkey()?;
+        winapi::um::winreg::RegDeleteValueA(key, CString::new("poe-minimizer").unwrap().as_ptr());
+    }
+    Ok(())
+}
+
+fn get_autostart_hkey() -> Result<winapi::shared::minwindef::HKEY, Error> {
+    let mut key: winapi::shared::minwindef::HKEY = null_mut();
+    unsafe {
+        let result = winapi::um::winreg::RegCreateKeyA(HKEY_CURRENT_USER, CString::new("Software\\Microsoft\\Windows\\CurrentVersion\\Run").unwrap().as_ptr(), &mut key);
+        if result != ERROR_SUCCESS as i32 {
+            Err(Error::last_os_error())
+        } else {
+            Ok(key)
+        }
+    }
 }

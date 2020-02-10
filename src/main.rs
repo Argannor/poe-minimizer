@@ -68,23 +68,38 @@ fn init_logger() {
             _ => LevelFilter::Warn
         }
     };
-
+    let log_path = join_executable_path("log.txt").expect("Unable to determine path for log file");
     simplelog::CombinedLogger::init(
         vec![
-            WriteLogger::new(level, simplelog::Config::default(), File::create("log.txt").unwrap())
+            WriteLogger::new(level, simplelog::Config::default(), File::create(log_path).unwrap())
         ]
     ).unwrap();
 }
 
 fn main_window() -> Result<(), Error> {
-    let message_window_handle = tray::create_message_window()?;
+    let mut run_on_startup = winutils::is_in_autostart()?;
+    if run_on_startup {
+        // refresh auto start entry in case the path has changed.
+        winutils::remove_from_autostart().log_error_and_ignore("Failed to remove from autostart");
+        winutils::add_to_autostart().log_error_and_ignore("Failed to add to autostart");
+    }
+
+    let mut system_tray = tray::SystemTray::new(run_on_startup.clone())?;
     while RUNNING.load(Ordering::Relaxed) {
-        let event = tray::handle_windows_messages(message_window_handle)?;
+        let event = system_tray.handle_windows_messages()?;
         match event {
             Event::Exit => {
-                tray::destroy_message_window(message_window_handle)?;
                 RUNNING.store(false, Ordering::Relaxed);
-            }
+            },
+            Event::ToggleAutoStart => {
+                run_on_startup = !run_on_startup;
+                if run_on_startup {
+                    winutils::add_to_autostart().log_error_and_ignore("Failed to add to autostart");
+                } else {
+                    winutils::remove_from_autostart().log_error_and_ignore("Failed to remove from autostart");
+                }
+                system_tray.set_run_on_startup(run_on_startup.clone())
+            },
             Event::Nothing => {}
         }
     }
@@ -116,8 +131,7 @@ fn find_log_path(window_handle: winapi::shared::windef::HWND) -> Result<String, 
 
 fn construct_log_path(poe_executable_path: PathBuf) -> Option<String> {
     poe_executable_path.parent()
-        .map(|path| path.join("logs\\Client.txt"))
-        .and_then(|path_buffer| path_buffer.to_str().map(|x| x.to_string()))
+        .map(|path| path.join("logs\\Client.txt").as_string())
 }
 
 fn check_for_minimization(handle: winapi::shared::windef::HWND, settings: &Settings) -> Result<(), Error> {
@@ -131,17 +145,11 @@ fn check_for_minimization(handle: winapi::shared::windef::HWND, settings: &Setti
             None => {}
         }
         let minimized = winutils::is_window_minimized(handle)?;
-        if !minimized && minimized != was_minimized {
+        if !minimized && was_minimized {
             last_time_maximized = SystemTime::now();
         }
         was_minimized = minimized;
-
-        let elapsed = match last_time_maximized.elapsed() {
-            Ok(elapsed) => {
-                elapsed.as_secs()
-            }
-            Err(_) => 0
-        };
+        let elapsed = last_time_maximized.elapsed().map(|elapsed| elapsed.as_secs()).unwrap_or(0);
 
         if afk_status && elapsed > settings.seconds_until_minimize {
             winutils::minimize_window(handle)?;

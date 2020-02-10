@@ -17,6 +17,7 @@ can't even forget it :)
 
 - Download the Zip file on the releases page and extract it
 - run poe-minimizer.exe 
+- To close or set it run on system startup right click the tray icon
 
 ## Help / Issues
 
