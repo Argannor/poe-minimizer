@@ -11,7 +11,7 @@ use winapi::um::wingdi::*;
 use winapi::um::winuser::*;
 
 use crate::tray::Event::{Exit, Nothing, ToggleAutoStart};
-use crate::utils::{LoggableResult, ToOwnedStr, join_executable_path};
+use crate::utils::{LoggableResult, join_executable_path};
 
 const SYSICON_ID: u32 = 0x10;
 const SYSTEM_TRAY_POPUP_EXIT: usize = 0x111;
