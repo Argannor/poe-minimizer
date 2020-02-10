@@ -8,7 +8,7 @@
 start
 
 repeat
-if (Is Path of Exile running? STYLE_ACCENT) then (yes)
+if (Is Path of Exile running?) then (yes)
     |Check AFK status|
     repeat
         :Check AFK status using Client.txt;
