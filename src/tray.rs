@@ -16,8 +16,11 @@ use crate::utils::{LoggableResult, join_executable_path};
 const SYSICON_ID: u32 = 0x10;
 const SYSTEM_TRAY_POPUP_EXIT: usize = 0x111;
 const SYSTEM_TRAY_POPUP_STARTUP: usize = 0x112;
+const SYSTEM_TRAY_POPUP_VERSION: usize = 0x113;
 const SYSTEM_TRAY_MESSAGE: u32 = 0x11;
 const MESSAGE_SHOW_TRAY_POPUP: u32 = WM_APP + 1;
+
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 pub enum Event {
     Exit,
@@ -235,6 +238,9 @@ fn create_tray_menu(run_on_startup: bool) -> HMENU {
     unsafe {
         let popup = CreatePopupMenu();
         trace!("creating popup: {:?}", popup);
+        let version = format!("poe-minimizer v{}", VERSION);
+        InsertMenuA(popup, 0xFFFFFFFE, MF_BYPOSITION | MF_STRING | MF_DISABLED, SYSTEM_TRAY_POPUP_VERSION, CString::new(version).unwrap().as_ptr());
+        InsertMenuA(popup, 0xFFFFFFFE, MF_SEPARATOR, 0, CString::new("test").unwrap().as_ptr());
         InsertMenuA(popup, 0xFFFFFFFE, MF_BYPOSITION | MF_STRING | bool_as_menu_flag(run_on_startup), SYSTEM_TRAY_POPUP_STARTUP, CString::new("Run on startup").unwrap().as_ptr());
         InsertMenuA(popup, 0xFFFFFFFE, MF_SEPARATOR, 0, CString::new("test").unwrap().as_ptr());
         InsertMenuA(popup, 0xFFFFFFFE, MF_BYPOSITION | MF_STRING, SYSTEM_TRAY_POPUP_EXIT, CString::new("Exit").unwrap().as_ptr());
